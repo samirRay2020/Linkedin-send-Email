@@ -28,37 +28,58 @@ async function run() {
 
   const smtpUser = process.env.EMAIL_USER;
   const smtpPass = process.env.EMAIL_PASS;
-  const mailTo = process.env.EMAIL_TO || smtpUser;
+  const mailToRaw = process.env.EMAIL_TO || smtpUser;
   const mailFrom = smtpUser;
 
+  // Validate required environment variables
   if (!smtpUser || !smtpPass) {
+    console.error("[❌] Missing required environment variables");
+    console.error(`[DEBUG] EMAIL_USER: ${smtpUser ? "set" : "missing"}`);
+    console.error(`[DEBUG] EMAIL_PASS: ${smtpPass ? "set" : "missing"}`);
     throw new Error("EMAIL_USER and EMAIL_PASS are required to send email");
   }
 
-  if (!mailTo) {
+  if (!mailToRaw) {
+    console.error("[❌] No email recipient specified");
     throw new Error("EMAIL_TO or EMAIL_USER is required to send email");
   }
 
+  // Support comma-separated receivers
+  const mailToList = mailToRaw
+    .split(",")
+    .map((email) => email.trim())
+    .filter((email) => email.length > 0);
+
+  if (mailToList.length === 0) {
+    console.error("[❌] No valid email addresses found in EMAIL_TO");
+    throw new Error("EMAIL_TO must contain at least one valid email address");
+  }
+
+  console.log(`[📧] Email recipients: ${mailToList.join(", ")}`);
+
   const transporter = nodemailer.createTransport({
     host: "smtp.strato.de",
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
       user: smtpUser,
       pass: smtpPass,
     },
   });
 
+  console.log("[📡] Verifying SMTP connection...");
   await transporter.verify();
+  console.log("[✅] SMTP connection verified");
 
+  console.log("[📨] Sending email...");
   await transporter.sendMail({
     from: mailFrom,
-    to: mailTo,
+    to: mailToList,
     subject: "LinkedIn Daily Updates",
     text: formatted,
   });
 
-  console.log("Email sent");
+  console.log("[✅] Email sent successfully");
 }
 
 run();
