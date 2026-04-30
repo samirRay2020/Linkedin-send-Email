@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 
 # Email Settings
 EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_APP_PASSWORD = os.getenv("EMAIL_APP_PASSWORD") or os.getenv("EMAIL_PASS")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
 EMAIL_TO_RAW = os.getenv("EMAIL_TO") or EMAIL_USER
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.strato.de")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 465))
@@ -60,10 +60,10 @@ def send_email(subject, body_html):
     """Send email via Strato SMTP"""
     
     # Validate environment variables
-    if not all([EMAIL_USER, EMAIL_APP_PASSWORD, EMAIL_TO_RAW, SMTP_HOST, SMTP_PORT]):
+    if not all([EMAIL_USER, EMAIL_PASS, EMAIL_TO_RAW, SMTP_HOST, SMTP_PORT]):
         print("[❌] Missing required environment variables")
         print(f"[DEBUG] EMAIL_USER: {'✓' if EMAIL_USER else '❌'}")
-        print(f"[DEBUG] EMAIL_APP_PASSWORD: {'✓' if EMAIL_APP_PASSWORD else '❌'}")
+        print(f"[DEBUG] EMAIL_PASS: {'✓' if EMAIL_PASS else '❌'}")
         print(f"[DEBUG] EMAIL_TO: {'✓' if EMAIL_TO_RAW else '❌'}")
         print(f"[DEBUG] SMTP_HOST: {SMTP_HOST}, PORT: {SMTP_PORT}")
         raise Exception("Missing required environment variables")
@@ -91,7 +91,7 @@ def send_email(subject, body_html):
         print(f"[📡] Connecting to SMTP: {SMTP_HOST}:{SMTP_PORT}")
         with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as server:
             print("[🔐] Authenticating...")
-            server.login(EMAIL_USER, EMAIL_APP_PASSWORD)
+            server.login(EMAIL_USER, EMAIL_PASS)
             print("[✓] Authentication successful")
             
             print("[📨] Sending email...")
@@ -99,7 +99,7 @@ def send_email(subject, body_html):
             print("[✅] Email sent successfully")
     except smtplib.SMTPAuthenticationError as e:
         print(f"[❌] Authentication failed: {e}")
-        print("[💡] Check: EMAIL_USER and EMAIL_APP_PASSWORD are correct")
+        print("[💡] Check: EMAIL_USER and EMAIL_PASS are correct")
         raise
     except Exception as e:
         print(f"[❌] Failed to send email: {e}")
