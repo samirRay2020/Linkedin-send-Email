@@ -18,8 +18,8 @@ async function run() {
   }).join("\n");
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com", // change if needed
-    port: 587,
+    host: "smtp.strato.de", // change if needed
+    port: 465,
     secure: false,
     auth: {
       user: process.env.EMAIL_USER,
@@ -29,7 +29,7 @@ async function run() {
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER,
+    to: to: process.env.EMAIL_TO,
     subject: "LinkedIn Daily Updates",
     text: formatted,
   });
