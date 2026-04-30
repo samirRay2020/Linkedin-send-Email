@@ -27,16 +27,21 @@ async function run() {
     .join("\n");
 
   const smtpUser = process.env.EMAIL_USER;
-  const smtpPass = process.env.EMAIL_PASS;
+  const smtpPass = process.env.EMAIL_APP_PASSWORD || process.env.EMAIL_PASS;
   const mailToRaw = process.env.EMAIL_TO || smtpUser;
   const mailFrom = smtpUser;
 
   // Validate required environment variables
   if (!smtpUser || !smtpPass) {
     console.error("[❌] Missing required environment variables");
-    console.error(`[DEBUG] EMAIL_USER: ${smtpUser ? "set" : "missing"}`);
-    console.error(`[DEBUG] EMAIL_PASS: ${smtpPass ? "set" : "missing"}`);
-    throw new Error("EMAIL_USER and EMAIL_PASS are required to send email");
+    console.error(`[DEBUG] EMAIL_USER: ${smtpUser ? "✓ " + smtpUser : "❌ missing"}`);
+    console.error(
+      `[DEBUG] EMAIL_APP_PASSWORD: ${process.env.EMAIL_APP_PASSWORD ? "✓ set" : "❌ not set"}`
+    );
+    console.error(`[DEBUG] EMAIL_PASS: ${process.env.EMAIL_PASS ? "✓ set" : "❌ not set"}`);
+    throw new Error(
+      "EMAIL_USER and (EMAIL_APP_PASSWORD or EMAIL_PASS) are required to send email"
+    );
   }
 
   if (!mailToRaw) {
