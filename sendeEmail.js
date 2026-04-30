@@ -29,7 +29,7 @@ async function run() {
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
-    to: to: process.env.EMAIL_TO,
+    to: process.env.EMAIL_TO,
     subject: "LinkedIn Daily Updates",
     text: formatted,
   });
