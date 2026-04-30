@@ -5,7 +5,8 @@ async function run() {
   const GIST_URL = "https://gist.githubusercontent.com/samirRay2020/48921ceacc845ba5bcbb5463052e0d5c/raw/linkedin-data.json";
 
   const res = await fetch(GIST_URL);
-  const data = await res.json();
+  const json = await res.json();
+  const data = Array.isArray(json) ? json : json.data;
 
   if (!data || data.length === 0) {
     console.log("No data to send");
