@@ -28,7 +28,7 @@ async function run() {
 
   const smtpUser = process.env.EMAIL_USER;
   const smtpPass = process.env.EMAIL_PASS;
-  const mailTo = process.env.EMAIL_TO;
+  const mailTo = process.env.EMAIL_TO || smtpUser;
   const mailFrom = smtpUser;
 
   if (!smtpUser || !smtpPass) {
@@ -36,7 +36,7 @@ async function run() {
   }
 
   if (!mailTo) {
-    throw new Error("EMAIL_TO is required to send email");
+    throw new Error("EMAIL_TO or EMAIL_USER is required to send email");
   }
 
   const transporter = nodemailer.createTransport({
