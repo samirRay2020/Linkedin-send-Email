@@ -13,16 +13,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          node-version: 18
+          python-version: "3.11"
 
-      - name: Install deps
-        run: npm install
+      - name: Install dependencies
+        run: pip install requests
 
       - name: Run script
-        run: node sendeEmail.js
+        run: python sendeEmail.py
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
