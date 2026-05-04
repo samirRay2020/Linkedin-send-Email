@@ -116,8 +116,15 @@ def main():
         print("[⚠️] No data to send")
         return
     
+    # ✅ Filter for yesterday items only
+    yesterday_items = [item for item in items if item.get("isYesterday") is True]
+    
+    if not yesterday_items:
+        print("[⚠️] No 'yesterday' items found — skipping email")
+        return
+    
     # Format email body
-    html_body = format_email_body(items)
+    html_body = format_email_body(yesterday_items)
     if not html_body:
         print("[⚠️] Could not format email body")
         return
