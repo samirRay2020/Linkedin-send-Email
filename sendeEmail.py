@@ -112,6 +112,11 @@ def main():
     # Fetch gist data
     items = fetch_gist()
     
+    # ✅ If API returned {"data":"NA"} → do nothing
+    if items == {"data": "NA"}:
+        print("[ℹ️] No data available — exiting")
+        return
+    
     if not items:
         print("[⚠️] No data to send")
         return
@@ -125,6 +130,7 @@ def main():
     
     # Format email body
     html_body = format_email_body(yesterday_items)
+    
     if not html_body:
         print("[⚠️] Could not format email body")
         return
